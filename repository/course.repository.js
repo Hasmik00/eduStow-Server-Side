@@ -1,41 +1,42 @@
-import Course from '../model/course.js';
+import Course from "../model/course.model.js";
 
 class CourseRepository {
-	constructor() {}
+  constructor() {}
 
-	async createNewCourse(title, description, subcategoryId) {
-		const newCourse = new Course({
-			title: title,
-			description: description,
-			subcategoryId: subcategoryId,
-		});
-		newCourse.save();
-		return newCourse;
-	}
+  async createNewCourse(title, description, subcategoryId) {
+    const newCourse = new Course({
+      title: title,
+      description: description,
+      subcategoryId: subcategoryId,
+    });
 
-	async getCourseById(id) {
-		return Course.findById(id);
-	}
+    newCourse.save();
+    return newCourse;
+  }
 
-	async getCourseByTitle(title) {
-		return Course.find({title});
-	}
+  async getCourseById(id) {
+    return Course.findById(id);
+  }
 
-	async getAllCourses() {
-		return Course.find();
-	}
+  async getCourseByTitle(title) {
+    return Course.findOne({ title });
+  }
 
-	async updateCourseById(id, updates, options) {
-		return Course.findByIdAndUpdate(id, updates, options);
-	}
+  async getAllCourses() {
+    return Course.find();
+  }
 
-	async deleteCourseById(id) {
-		return Course.findByIdAndDelete(id);
-	}
+  async updateCourseById(id, updates) {
+    return Course.findByIdAndUpdate(id, updates);
+  }
 
-	async deleteAllCourses() {
-		return Course.deleteMany();
-	}
+  async deleteCourseById(id) {
+    return Course.findByIdAndDelete(id);
+  }
+
+  async deleteAllCourses() {
+    return Course.deleteMany();
+  }
 }
 
 export default new CourseRepository();

@@ -1,76 +1,81 @@
-import courseRepository from '../repository/course.repository.js';
-import { to } from 'await-to-js';
+import { to } from "await-to-js";
+
+import courseRepository from "../repository/course.repository.js";
 
 class CourseService {
-	static async createCourse(title, description, subcategoryId) {
-		const [error, course] = await to(
-			courseRepository.createNewCourse(title, description, subcategoryId)
-		);
-		if (error) {
-			throw new Error(error);
-		}
-		return course;
-	}
+  static async createCourse(title, description, subcategoryId) {
+    const [error, course] = await to(
+      courseRepository.createNewCourse(title, description, subcategoryId)
+    );
 
-	static async getCourseById(id) {
-		const [error, course] = await to(courseRepository.getCourseById(id));
+    if (error) {
+      throw new Error(error);
+    }
 
-		if (error || !course) {
-			throw new Error(`No course with this ${id} id is found!`);
-		}
+    return course;
+  }
 
-		return course;
-	}
-	static async getCourseByTitle(title) {
-		const [error, course] = await to(courseRepository.getCourseByTitle(title));
+  static async getCourseById(id) {
+    const [error, course] = await to(courseRepository.getCourseById(id));
 
-		if (error || !course) {
-			throw new Error(`No course with this ${title} title is found!`);
-		}
+    if (error || !course) {
+      throw new Error(`No course with this ${id} id is found!`);
+    }
 
-		return course;
-	}
-	static async getAllCourses() {
-		const [error, courses] = await to(courseRepository.getAllCourses());
+    return course;
+  }
 
-		if (error || !courses) {
-			throw new Error('No course is found!');
-		}
+  static async getCourseByTitle(title) {
+    const [error, course] = await to(courseRepository.getCourseByTitle(title));
 
-		return courses;
-	}
+    if (error || !course) {
+      throw new Error(`No course with this ${title} title is found!`);
+    }
 
-	static async updateACourseById(id, updates, options) {
-		const [error, course] = await to(
-			courseRepository.updateCourseById(id, updates, options)
-		);
+    return course;
+  }
 
-		if (error || !course) {
-			throw new Error(`No course with ${id} id is found!`);
-		}
+  static async getAllCourses() {
+    const [error, courses] = await to(courseRepository.getAllCourses());
 
-		return course;
-	}
+    if (error || !courses) {
+      throw new Error("No course is found!");
+    }
 
-	static async deleteCourseById(id) {
-		const [error, course] = await to(courseRepository.deleteCourseById(id));
+    return courses;
+  }
 
-		if (error) {
-			throw new Error(`No course with this ${id} id is found!`);
-		}
+  static async updateACourseById(id, updates) {
+    const [error, course] = await to(
+      courseRepository.updateCourseById(id, updates)
+    );
 
-		return course;
-	}
+    if (error || !course) {
+      throw new Error(`No course with ${id} id is found!`);
+    }
 
-	static async deleteAllCourses() {
-		const [error, course] = await to(courseRepository.deleteAllCourses());
+    return course;
+  }
 
-		if (error || !course) {
-			throw new Error('No course is found!');
-		}
+  static async deleteCourseById(id) {
+    const [error, course] = await to(courseRepository.deleteCourseById(id));
 
-		return course;
-	}
+    if (error) {
+      throw new Error(`No course with this ${id} id is found!`);
+    }
+
+    return course;
+  }
+
+  static async deleteAllCourses() {
+    const [error, course] = await to(courseRepository.deleteAllCourses());
+
+    if (error || !course) {
+      throw new Error("No course is found!");
+    }
+
+    return course;
+  }
 }
 
 export default CourseService;

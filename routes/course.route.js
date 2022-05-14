@@ -1,22 +1,22 @@
-import express from 'express';
+import express from "express";
 import {
-	createCourse,
-	getCourseById,
-	getCourseByTitle,
-	getAllCourse,
-	updateCourseById,
-	deleteCourseById,
-	deleteAllCourses,
-} from '../controller/course.controller.js';
+  createCourse,
+  deleteAllCourses,
+  deleteCourseById,
+  getAllCourses,
+  getCourseById,
+  getCourseByTitle,
+  updateCourseById,
+} from "../controller/course.controller.js";
 
 const router = express.Router();
 
-router.post('/createCourse', createCourse); //works
-router.get('/getCourseById', getCourseById); //works
-router.get('/getCourseByTitle', getCourseByTitle); //works add to return no course with this title check this in the other 2 places
-router.get('/getAllCourse', getAllCourse); //works
-router.post('/updateCourseById', updateCourseById); //works
-router.delete('/deleteCourseById', deleteCourseById); //works
-router.delete('/deleteAllCourses', deleteAllCourses); //works
+router.post("/", createCourse); //works
+router.get("/id/:id", getCourseById); //works
+router.get("/title/:title", getCourseByTitle); //works
+router.get("/", getAllCourses); //works
+router.patch("/:id", updateCourseById); //works
+router.delete("/:id", deleteCourseById); //works
+router.delete("/", deleteAllCourses); //works
 
 export default router;

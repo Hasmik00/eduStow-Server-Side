@@ -4,9 +4,9 @@ import ConfigSchema from "./config.schema.js";
 
 class ConfigService {
   constructor() {
-    this.DB_CONNECT = process.env.DB_CONNECT;
-    this.SECRET_TOKEN = process.env.SECRET_TOKEN;
-    this.PORT = process.env.PORT;
+    this.dbConnection = process.env.DB_CONNECT;
+    this.secretToken = process.env.SECRET_TOKEN;
+    this.port = process.env.PORT;
   }
 
   isValid() {

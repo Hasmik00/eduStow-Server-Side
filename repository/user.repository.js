@@ -1,5 +1,5 @@
 import User from "../model/user.model.js";
-import Course from "../model/course.js";
+import Course from "../model/course.model.js";
 
 class UserRepository {
   constructor() {}

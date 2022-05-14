@@ -1,41 +1,42 @@
-import Subcategory from '../model/subcategory.model.js';
+import Subcategory from "../model/subcategory.model.js";
 
 class SubcategoryRepository {
-	constructor() {}
+  constructor() {}
 
-	async createNewSubcategory(title, description, categoryId) {
-		const newSubcategory = new Subcategory({
-			title: title,
-			description: description,
-			categoryId: categoryId,
-		});
-		newSubcategory.save();
-		return newSubcategory;
-	}
+  async createNewSubcategory(title, description, categoryId) {
+    const newSubcategory = new Subcategory({
+      title: title,
+      description: description,
+      categoryId: categoryId,
+    });
 
-	async getSubcategoryById(id) {
-		return Subcategory.findById(id);
-	}
+    newSubcategory.save();
+    return newSubcategory;
+  }
 
-	async getSubcategoryByTitle(title) {
-		return Subcategory.find({title});
-	}
+  async getSubcategoryById(id) {
+    return Subcategory.findById(id);
+  }
 
-	async getAllSubcategories() {
-		return Subcategory.find();
-	}
+  async getSubcategoryByTitle(title) {
+    return Subcategory.findOne({ title });
+  }
 
-	async updateSubcategoryById(id, updates, options) {
-		return Subcategory.findByIdAndUpdate(id, updates, options);
-	}
+  async getAllSubcategories() {
+    return Subcategory.find();
+  }
 
-	async deleteSubcategoryById(id) {
-		return Subcategory.findByIdAndDelete(id);
-	}
+  async updateSubcategoryById(id, updates) {
+    return Subcategory.findByIdAndUpdate(id, updates);
+  }
 
-	async deleteAllSubcategories() {
-		return Subcategory.deleteMany();
-	}
+  async deleteSubcategoryById(id) {
+    return Subcategory.findByIdAndDelete(id);
+  }
+
+  async deleteAllSubcategories() {
+    return Subcategory.deleteMany();
+  }
 }
 
 export default new SubcategoryRepository();

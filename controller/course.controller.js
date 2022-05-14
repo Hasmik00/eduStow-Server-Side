@@ -1,108 +1,85 @@
-import {validationResult} from 'express-validator';
+import { validationResult } from "express-validator";
 
-import CourseService from '../service/course.service.js';
+import CourseService from "../service/course.service.js";
 
-export const createCourse = async (req, res, next) => {
-	const {title, description, subcategoryId} = req.body;
-	const errors = validationResult(req);
+export const createCourse = async (req, res) => {
+  const errors = validationResult(req);
+  const { title, description, subcategoryId } = req.body;
 
-	if (!errors.isEmpty()) {
-		throw new Error('Validation error');
-	}
+  if (!errors.isEmpty()) {
+    throw new Error("Validation error");
+  }
 
-	const newCourse = CourseService.createCourse(
-		title,
-		description,
-		subcategoryId,
-	);
+  const newCourse = await CourseService.createCourse(
+    title,
+    description,
+    subcategoryId
+  );
 
-	res.status(200).send(newCourse);
-	return newCourse;
+  res.status(201).send(newCourse);
 };
 
-export const getCourseById = async (req, res, next) => {
-	const id = req.body.id;
-	const errors = validationResult(req);
+export const getCourseById = async (req, res) => {
+  const errors = validationResult(req);
+  const id = req.params.id;
 
-	if (!errors.isEmpty()) {
-		return res.status(422).json(errors.array());
-	}
+  if (!errors.isEmpty()) {
+    throw new Error("Please enter a valid id");
+  }
 
-	const course = await CourseService.getCourseById(id);
-
-	res.status(201).send(course);
-
-	return course;
-};
-export const getCourseByTitle = async (req, res, next) => {
-	const {title} = req.body;
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		return res.status(422).json(errors.array());
-	}
-
-	const course = await CourseService.getCourseByTitle(title);
-
-	res.status(201).send(course);
-
-	return course;
+  const course = await CourseService.getCourseById(id);
+  res.status(200).send(course);
 };
 
-export const getAllCourse = async (req, res, next) => {
-	const errors = validationResult(req);
+export const getCourseByTitle = async (req, res) => {
+  const errors = validationResult(req);
+  const { title } = req.params;
 
-	if (!errors.isEmpty()) {
-		return res.status(422).json(errors.array());
-	}
+  if (!errors.isEmpty()) {
+    throw new Error("Please enter a valid title");
+  }
 
-	const courses = await CourseService.getAllCourses();
-
-	res.status(201).send(courses);
-
-	return courses;
+  const course = await CourseService.getCourseByTitle(title);
+  res.status(200).send(course);
 };
 
-export const updateCourseById = async (req, res, next) => {
-	const id = req.body.id;
-	const updates = req.body;
-	const options = {new: true};
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		return res.status(422).json(errors.array());
-	}
-
-	const course = await CourseService.updateACourseById(id, updates, options);
-
-	res.status(201).send(course);
-
-	return course;
+export const getAllCourses = async (req, res) => {
+  const courses = await CourseService.getAllCourses();
+  res.status(200).send(courses);
 };
 
-export const deleteCourseById = async (req, res, next) => {
-	const id = req.body.id;
-	const errors = validationResult(req);
+export const updateCourseById = async (req, res) => {
+  const id = req.params.id;
+  const course = await CourseService.getCourseById(id);
+  const errors = validationResult(req);
+  const updates = req.body;
 
-	if (!errors.isEmpty()) {
-		return res.status(422).json(errors.array());
-	}
+  if (!course) {
+    throw new Error(`No course is found with this ${id} id`);
+  } else if (!errors.isEmpty()) {
+    throw new Error("Please enter a valid id");
+  }
 
-	const course = await CourseService.deleteCourseById(id);
-
-	res.status(201).send(course);
-
-	return course;
+  const newCourse = await CourseService.updateACourseById(id, updates);
+  res.status(201).send(newCourse);
 };
 
-export const deleteAllCourses = async (req, res, next) => {
-	const errors = validationResult(req);
+export const deleteCourseById = async (req, res) => {
+  const id = req.params.id;
+  const course = await CourseService.getCourseById(id);
+  const errors = validationResult(req);
 
-	if (!errors.isEmpty()) {
-		return res.status(422).json(errors.array());
-	}
+  if (!course) {
+    throw new Error(`No course found with this ${id} id`);
+  } else if (!errors.isEmpty()) {
+    throw new Error("Please enter a valid id");
+  }
 
-	await CourseService.deleteAllCourses();
+  const deletedCourse = await CourseService.deleteCourseById(id);
+  res.status(200).send(deletedCourse);
+};
 
-	res.status(201).send('Deleted all courses!');
+export const deleteAllCourses = async (req, res) => {
+  await CourseService.deleteAllCourses();
+  res.status(200).send("Deleted all courses!");
 };

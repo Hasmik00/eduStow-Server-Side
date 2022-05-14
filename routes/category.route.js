@@ -1,22 +1,23 @@
-import express from 'express';
+import express from "express";
 import {
-	createCategory,
-	deleteAllCategories,
-	deleteCategoryById,
-	getAllCategories,
-	getCategoryById,
-	getCategoryByTitle,
-	updateCategoryById,
-} from '../controller/category.controller.js';
+  createCategory,
+  deleteAllCategories,
+  deleteCategoryById,
+  getAllCategories,
+  getCategoryById,
+  getCategoryByTitle,
+  updateCategoryById,
+} from "../controller/category.controller.js";
+import { categoryValidation } from "../validation/input.validation.js";
 
 const router = express.Router();
 
-router.post('/createCategory', createCategory); //works
-router.get('/getCategoryById', getCategoryById); // works
-router.get('/getCategoryByTitle', getCategoryByTitle); //works, but if entering wrong title does not throw an error
-router.get('/getAllCategories', getAllCategories); //works
-router.post('/updateCategoryById', updateCategoryById); //works
-router.delete('/deleteCategoryById', deleteCategoryById); //works
-router.delete('/deleteAllCategories', deleteAllCategories); //works
+router.post("/", createCategory); //works
+router.get("/id/:id", getCategoryById); //works
+router.get("/title/:title", getCategoryByTitle); //works
+router.get("/", getAllCategories); //works
+router.patch("/:id", updateCategoryById); //works
+router.delete("/:id", deleteCategoryById); //works
+router.delete("/", deleteAllCategories); //works
 
 export default router;
