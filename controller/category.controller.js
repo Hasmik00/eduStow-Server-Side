@@ -1,13 +1,15 @@
 import { validationResult } from "express-validator";
 
 import CategoryService from "../service/Category.service.js";
+import NotFoundError from "../errors/not-found.error.js";
+import ValidationError from "../errors/validation.error.js";
 
 export const createCategory = async (req, res) => {
   const errors = validationResult(req);
   const { title, description } = req.body;
 
   if (!errors.isEmpty()) {
-    throw new Error("Validation error");
+    throw new ValidationError("Please enter valid data");
   }
 
   const newCategory = await CategoryService.createCategory(title, description);
@@ -19,7 +21,7 @@ export const getCategoryById = async (req, res) => {
   const id = req.params.id;
 
   if (!errors.isEmpty()) {
-    throw new Error("Please enter a valid id");
+    throw new ValidationError("Please enter a valid id");
   }
 
   const category = await CategoryService.getCategoryById(id);
@@ -31,7 +33,7 @@ export const getCategoryByTitle = async (req, res) => {
   const { title } = req.params;
 
   if (!errors.isEmpty()) {
-    throw new Error("Please enter a valid title");
+    throw new ValidationError("Please enter a valid title");
   }
 
   const category = await CategoryService.getCategoryByTitle(title);
@@ -50,9 +52,9 @@ export const updateCategoryById = async (req, res) => {
   const updates = req.body;
 
   if (!category) {
-    throw new Error(`No category found with this ${id} id`);
+    throw new NotFoundError(`No category found with this ${id} id`);
   } else if (!errors.isEmpty()) {
-    throw new Error("Please enter a valid id");
+    throw new ValidationError("Please enter a valid id");
   }
 
   const newCategory = await CategoryService.updateACategoryById(id, updates);
@@ -65,9 +67,9 @@ export const deleteCategoryById = async (req, res) => {
   const errors = validationResult(req);
 
   if (!category) {
-    throw new Error(`No category found with this ${id} id`);
+    throw new NotFoundError(`No category found with this ${id} id`);
   } else if (!errors.isEmpty()) {
-    throw new Error("Please enter a valid id");
+    throw new ValidationError("Please enter a valid id");
   }
 
   const deletedCategory = await CategoryService.deleteCategoryById(id);

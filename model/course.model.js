@@ -14,10 +14,6 @@ const courseSchema = new mongoose.Schema({
     ref: "Subcategory",
     required: true,
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
 });
 
 export default mongoose.model("Course", courseSchema);
