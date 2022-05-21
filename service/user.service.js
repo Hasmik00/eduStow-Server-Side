@@ -5,8 +5,9 @@ import { to } from "await-to-js";
 import userRepository from "../repository/user.repository.js";
 import NotFoundError from "../errors/not-found.error.js";
 import UnauthorizedError from "../errors/unauthorized.error.js";
+import ConfigService from "../config/config.service.js";
 
-class AuthService {
+class UserService {
   static async signUp(name, email, password) {
     const [error, user] = await to(userRepository.getUserByEmail(email));
 
@@ -36,12 +37,12 @@ class AuthService {
     const [error, doMatch] = await to(bcrypt.compare(password, user.password));
 
     if (error || !doMatch) {
-      throw new UnauthorizedError("authentication failed");
+      throw new UnauthorizedError("Authentication failed");
     }
 
     const token = await jwt.sign(
       { _id: user._id, role: user.role },
-      process.env.SECRET_TOKEN,
+      ConfigService.secretToken,
       {
         expiresIn: "1h",
       }
@@ -143,4 +144,4 @@ class AuthService {
   }
 }
 
-export default AuthService;
+export default UserService;

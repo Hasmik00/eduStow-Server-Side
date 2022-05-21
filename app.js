@@ -31,7 +31,7 @@ app.use("/category", categoryRoute);
 app.use("/subcategory", subcategoryRoute);
 app.use("/course", courseRoute);
 
-if (ConfigService.isValid()) {
+if (!ConfigService.isValid()) {
   process.exit(0);
 }
 

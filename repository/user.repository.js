@@ -4,10 +4,6 @@ import { roles } from "../utils/constants.js";
 class UserRepository {
   constructor() {}
 
-  async getUserByEmail(email) {
-    return User.findOne({ email });
-  }
-
   async createNewUser(name, email, password) {
     const newUser = new User({
       name: name,
@@ -22,6 +18,10 @@ class UserRepository {
 
   async getUserById(id) {
     return User.findById(id);
+  }
+
+  async getUserByEmail(email) {
+    return User.findOne({ email });
   }
 
   async getUserByName(name) {
