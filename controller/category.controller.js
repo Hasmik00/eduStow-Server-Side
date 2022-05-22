@@ -17,13 +17,7 @@ export const createCategory = async (req, res) => {
 };
 
 export const getCategoryById = async (req, res) => {
-  const errors = validationResult(req);
   const id = req.params.id;
-
-  if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
-  }
-
   const category = await CategoryService.getCategoryById(id);
   res.status(200).send(category);
 };
@@ -54,7 +48,7 @@ export const updateCategoryById = async (req, res) => {
   if (!category) {
     throw new NotFoundError(`No category found with this ${id} id`);
   } else if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
+    throw new ValidationError("Please enter a valid data");
   }
 
   const newCategory = await CategoryService.updateACategoryById(id, updates);
@@ -64,12 +58,9 @@ export const updateCategoryById = async (req, res) => {
 export const deleteCategoryById = async (req, res) => {
   const id = req.params.id;
   const category = await CategoryService.getCategoryById(id);
-  const errors = validationResult(req);
 
   if (!category) {
     throw new NotFoundError(`No category found with this ${id} id`);
-  } else if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
   }
 
   const deletedCategory = await CategoryService.deleteCategoryById(id);

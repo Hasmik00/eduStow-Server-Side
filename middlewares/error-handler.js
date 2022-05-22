@@ -15,7 +15,7 @@ const errorHandler = async (err, req, res, next) => {
     return res.status(400).send(err.message);
   }
 
-  res.status(500).send("Some error occured");
+  res.status(500).send("Some error occurred");
   next(err);
 };
 

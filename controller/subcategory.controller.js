@@ -23,12 +23,7 @@ export const createSubcategory = async (req, res) => {
 };
 
 export const getSubcategoryById = async (req, res) => {
-  const errors = validationResult(req);
   const id = req.params.id;
-
-  if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
-  }
 
   const subcategory = await SubcategoryService.getSubcategoryById(id);
   res.status(200).send(subcategory);
@@ -74,12 +69,9 @@ export const updateSubcategoryById = async (req, res) => {
 export const deleteSubcategoryById = async (req, res) => {
   const id = req.params.id;
   const subcategory = await SubcategoryService.getSubcategoryById(id);
-  const errors = validationResult(req);
 
   if (!subcategory) {
     throw new NotFoundError(`No subcategory found with this ${id} id`);
-  } else if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
   }
 
   const deletedSubcategory = await SubcategoryService.deleteSubcategoryById(id);

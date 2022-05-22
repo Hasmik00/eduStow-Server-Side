@@ -25,12 +25,7 @@ export const createCourse = async (req, res) => {
 };
 
 export const getCourseById = async (req, res) => {
-  const errors = validationResult(req);
   const id = req.params.id;
-
-  if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
-  }
 
   const course = await CourseService.getCourseById(id);
   res.status(200).send(course);
@@ -72,12 +67,9 @@ export const updateCourseById = async (req, res) => {
 export const deleteCourseById = async (req, res) => {
   const id = req.params.id;
   const course = await CourseService.getCourseById(id);
-  const errors = validationResult(req);
 
   if (!course) {
     throw new NotFoundError(`No course found with this ${id} id`);
-  } else if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
   }
 
   const deletedCourse = await CourseService.deleteCourseById(id);
@@ -89,7 +81,7 @@ export const deleteAllCourses = async (req, res) => {
   res.status(200).send("Deleted all courses!");
 };
 
-export const getCourseMaterials = async (req, res, next) => {
+export const getCourseMaterials = async (req, res) => {
   const courseId = req.params.courseId;
   const course = await CourseService.getCourseById(courseId);
   const materialName = course.title + ".pdf";
@@ -97,7 +89,7 @@ export const getCourseMaterials = async (req, res, next) => {
 
   fs.readFile(materialPath, (err, data) => {
     if (err) {
-      return next(err);
+      throw new NotFoundError("no such file is found");
     }
     res.setHeader("Content-Type", "application/pdf");
     res.send(data);

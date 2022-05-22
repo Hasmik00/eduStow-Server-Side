@@ -17,8 +17,8 @@ export const signUp = async (req, res) => {
 };
 
 export const signIn = async (req, res) => {
-  const { email, password } = req.body;
   const errors = validationResult(req);
+  const { email, password } = req.body;
 
   if (!errors.isEmpty()) {
     return res.status(400).json(errors.array());
@@ -29,12 +29,7 @@ export const signIn = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
-  const errors = validationResult(req);
   const id = req.params.id;
-
-  if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
-  }
 
   const user = await UserService.getUserById(id);
   res.status(200).send(user);
@@ -76,12 +71,9 @@ export const updateUserById = async (req, res) => {
 export const deleteUserById = async (req, res) => {
   const id = req.params.id;
   const user = await UserService.getUserById(id);
-  const errors = validationResult(req);
 
   if (!user) {
     throw new NotFoundError(`No user found with this ${id} id`);
-  } else if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
   }
 
   const deletedUser = await UserService.deleteUserById(id);

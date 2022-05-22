@@ -1,7 +1,7 @@
 import express from "express";
 
 import userRoutes from "./routes/user.route.js";
-import connect from "./connection.js";
+import dbConnection from "./connection.js";
 import categoryRoute from "./routes/category.route.js";
 import subcategoryRoute from "./routes/subcategory.route.js";
 import courseRoute from "./routes/course.route.js";
@@ -9,7 +9,7 @@ import ConfigService from "./config/config.service.js";
 import errorHandler from "./middlewares/error-handler.js";
 
 const app = express();
-connect.connect;
+dbConnection.connect;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -37,4 +37,4 @@ if (!ConfigService.isValid()) {
 
 app.use(errorHandler);
 
-app.listen(process.env.PORT);
+app.listen(ConfigService.port);
