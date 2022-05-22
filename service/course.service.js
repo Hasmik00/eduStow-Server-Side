@@ -1,6 +1,7 @@
 import { to } from "await-to-js";
 
 import courseRepository from "../repository/course.repository.js";
+import NotFoundError from "../errors/not-found.error.js";
 
 class CourseService {
   static async createCourse(title, description, subcategoryId) {
@@ -19,7 +20,7 @@ class CourseService {
     const [error, course] = await to(courseRepository.getCourseById(id));
 
     if (error || !course) {
-      throw new Error(`No course with this ${id} id is found!`);
+      throw new NotFoundError(`No course with this ${id} id is found!`);
     }
 
     return course;
@@ -29,7 +30,7 @@ class CourseService {
     const [error, course] = await to(courseRepository.getCourseByTitle(title));
 
     if (error || !course) {
-      throw new Error(`No course with this ${title} title is found!`);
+      throw new NotFoundError(`No course with this ${title} title is found!`);
     }
 
     return course;
@@ -39,7 +40,7 @@ class CourseService {
     const [error, courses] = await to(courseRepository.getAllCourses());
 
     if (error || !courses) {
-      throw new Error("No course is found!");
+      throw new NotFoundError("No course is found!");
     }
 
     return courses;
@@ -51,7 +52,7 @@ class CourseService {
     );
 
     if (error || !course) {
-      throw new Error(`No course with ${id} id is found!`);
+      throw new NotFoundError(`No course with ${id} id is found!`);
     }
 
     return course;
@@ -61,7 +62,7 @@ class CourseService {
     const [error, course] = await to(courseRepository.deleteCourseById(id));
 
     if (error) {
-      throw new Error(`No course with this ${id} id is found!`);
+      throw new NotFoundError(`No course with this ${id} id is found!`);
     }
 
     return course;
@@ -71,7 +72,7 @@ class CourseService {
     const [error, course] = await to(courseRepository.deleteAllCourses());
 
     if (error || !course) {
-      throw new Error("No course is found!");
+      throw new NotFoundError("No course is found!");
     }
 
     return course;

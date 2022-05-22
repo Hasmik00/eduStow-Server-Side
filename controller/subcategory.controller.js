@@ -1,13 +1,16 @@
 import { validationResult } from "express-validator";
 
 import SubcategoryService from "../service/subcategory.service.js";
+import NotFoundError from "../errors/not-found.error.js";
+import ValidationError from "../errors/validation.error.js";
 
 export const createSubcategory = async (req, res) => {
   const errors = validationResult(req);
-  const { title, description, categoryId } = req.body;
+  const { title, description } = req.body;
+  const categoryId = req.params.categoryId;
 
   if (!errors.isEmpty()) {
-    throw new Error("Validation error");
+    throw new ValidationError("Please enter valid data");
   }
 
   const newSubcategory = await SubcategoryService.createSubcategory(
@@ -20,12 +23,7 @@ export const createSubcategory = async (req, res) => {
 };
 
 export const getSubcategoryById = async (req, res) => {
-  const errors = validationResult(req);
   const id = req.params.id;
-
-  if (!errors.isEmpty()) {
-    throw new Error("Please enter a valid id");
-  }
 
   const subcategory = await SubcategoryService.getSubcategoryById(id);
   res.status(200).send(subcategory);
@@ -36,7 +34,7 @@ export const getSubcategoryByTitle = async (req, res) => {
   const { title } = req.params;
 
   if (!errors.isEmpty()) {
-    throw new errors("Please enter a valid title");
+    throw new ValidationError("Please enter a valid title");
   }
 
   const subcategory = await SubcategoryService.getSubcategoryByTitle(title);
@@ -55,27 +53,25 @@ export const updateSubcategoryById = async (req, res) => {
   const updates = req.body;
 
   if (!subcategory) {
-    throw new Error(`No subcategory is found with this ${id} id`);
+    throw new NotFoundError(`No subcategory is found with this ${id} id`);
   } else if (!errors.isEmpty()) {
-    throw new Error("Please enter a valid id");
+    throw new ValidationError("Please enter a valid id");
   }
 
   const newSubcategory = await SubcategoryService.updateASubcategoryById(
     id,
     updates
   );
+
   res.status(201).send(newSubcategory);
 };
 
 export const deleteSubcategoryById = async (req, res) => {
   const id = req.params.id;
   const subcategory = await SubcategoryService.getSubcategoryById(id);
-  const errors = validationResult(req);
 
   if (!subcategory) {
-    throw new Error(`No subcategory found with this ${id} id`);
-  } else if (!errors.isEmpty()) {
-    throw new Error("Please enter a valid id");
+    throw new NotFoundError(`No subcategory found with this ${id} id`);
   }
 
   const deletedSubcategory = await SubcategoryService.deleteSubcategoryById(id);

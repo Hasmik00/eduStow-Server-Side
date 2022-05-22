@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   createSubcategory,
   deleteAllSubcategories,
@@ -8,15 +9,25 @@ import {
   getSubcategoryByTitle,
   updateSubcategoryById,
 } from "../controller/subcategory.controller.js";
+import { subCategoryValidator } from "../validation/input.validation.js";
+import { useAdmin, useAuthGuard } from "../middlewares/verifyToken.js";
 
 const router = express.Router();
 
-router.post("/", createSubcategory); //works
-router.get("/id/:id", getSubcategoryById); //works
-router.get("/title/:title", getSubcategoryByTitle); //doesn't work'
-router.get("/", getAllSubcategories); //works
-router.post("/:id", updateSubcategoryById); //works
-router.delete("/:id", deleteSubcategoryById); //works
-router.delete("/", deleteAllSubcategories); //works
+router.post(
+  "/:categoryId",
+  [subCategoryValidator(), useAuthGuard, useAdmin],
+  createSubcategory
+);
+router.get("/id/:id", getSubcategoryById);
+router.get("/title/:title", getSubcategoryByTitle);
+router.get("/", getAllSubcategories);
+router.patch(
+  "/:id",
+  [subCategoryValidator(), useAuthGuard, useAdmin],
+  updateSubcategoryById
+);
+router.delete("/:id", [useAuthGuard, useAdmin], deleteSubcategoryById);
+router.delete("/", [useAuthGuard, useAdmin], deleteAllSubcategories);
 
 export default router;

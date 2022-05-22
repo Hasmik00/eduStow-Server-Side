@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   createCourse,
   deleteAllCourses,
@@ -6,17 +7,29 @@ import {
   getAllCourses,
   getCourseById,
   getCourseByTitle,
+  getCourseMaterials,
   updateCourseById,
 } from "../controller/course.controller.js";
+import { courseValidator } from "../validation/input.validation.js";
+import { useAdmin, useAuthGuard } from "../middlewares/verifyToken.js";
 
 const router = express.Router();
 
-router.post("/", createCourse); //works
-router.get("/id/:id", getCourseById); //works
-router.get("/title/:title", getCourseByTitle); //works
-router.get("/", getAllCourses); //works
-router.patch("/:id", updateCourseById); //works
-router.delete("/:id", deleteCourseById); //works
-router.delete("/", deleteAllCourses); //works
+router.post(
+  "/:subcategoryId",
+  [courseValidator(), useAuthGuard, useAdmin],
+  createCourse
+);
+router.get("/id/:id", getCourseById);
+router.get("/title/:title", getCourseByTitle);
+router.get("/", getAllCourses);
+router.patch(
+  "/:id",
+  [courseValidator(), useAuthGuard, useAdmin],
+  updateCourseById
+);
+router.delete("/:id", [useAuthGuard, useAdmin], deleteCourseById);
+router.delete("/", [useAuthGuard, useAdmin], deleteAllCourses);
+router.get("/materials/:courseId", getCourseMaterials);
 
 export default router;

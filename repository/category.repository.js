@@ -8,6 +8,7 @@ class CategoryRepository {
       title: title,
       description: description,
     });
+
     newCategory.save();
     return newCategory;
   }
@@ -20,6 +21,7 @@ class CategoryRepository {
     return Category.findOne({ title });
   }
 
+  //add a function that gets a course by halth of the input
   async getAllCategories() {
     return Category.find();
   }

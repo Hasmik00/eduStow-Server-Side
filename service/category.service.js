@@ -1,5 +1,7 @@
-import categoryRepository from "../repository/category.repository.js";
 import { to } from "await-to-js";
+
+import categoryRepository from "../repository/category.repository.js";
+import NotFoundError from "../errors/not-found.error.js";
 
 class CategoryService {
   static async createCategory(title, description) {
@@ -20,7 +22,7 @@ class CategoryService {
     );
 
     if (error || !category) {
-      throw new Error(`No category with this ${title} title is found!`);
+      throw new NotFoundError(`No category with this ${title} title is found!`);
     }
 
     return category;
@@ -30,7 +32,7 @@ class CategoryService {
     const [error, category] = await to(categoryRepository.getCategoryById(id));
 
     if (error || !category) {
-      throw new Error(`No category with this ${id} is found!`);
+      throw new NotFoundError(`No category with this ${id} is found!`);
     }
 
     return category;
@@ -40,19 +42,19 @@ class CategoryService {
     const [error, category] = await to(categoryRepository.getAllCategories());
 
     if (error || !category) {
-      throw new Error("No category is found!");
+      throw new NotFoundError("No category is found!");
     }
 
     return category;
   }
 
-  static async updateACategoryById(id, updates, options) {
+  static async updateACategoryById(id, updates) {
     const [error, category] = await to(
-      categoryRepository.updateCategoryById(id, updates, options)
+      categoryRepository.updateCategoryById(id, updates)
     );
 
     if (error || !category) {
-      throw new Error(`No category with ${id} is found!`);
+      throw new NotFoundError(`No category with ${id} is found!`);
     }
 
     return category;
@@ -63,8 +65,8 @@ class CategoryService {
       categoryRepository.deleteCategoryById(id)
     );
 
-    if (error) {
-      throw new Error(`No category with this title ${id} is found!`);
+    if (error || !category) {
+      throw new NotFoundError(`No category with this title ${id} is found!`);
     }
 
     return category;
@@ -76,7 +78,7 @@ class CategoryService {
     );
 
     if (error || !category) {
-      throw new Error("No category is found!");
+      throw new NotFoundError("No category is found!");
     }
 
     return category;

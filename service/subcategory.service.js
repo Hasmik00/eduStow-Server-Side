@@ -1,6 +1,7 @@
 import { to } from "await-to-js";
 
 import subcategoryRepository from "../repository/subcategory.repository.js";
+import NotFoundError from "../errors/not-found.error.js";
 
 class SubcategoryService {
   static async createSubcategory(title, description, categoryId) {
@@ -21,7 +22,7 @@ class SubcategoryService {
     );
 
     if (error || !subcategory) {
-      throw new Error(`No subcategory with this ${id} is found!`);
+      throw new NotFoundError(`No subcategory with this ${id} is found!`);
     }
 
     return subcategory;
@@ -33,7 +34,7 @@ class SubcategoryService {
     );
 
     if (error || !subcategory) {
-      throw new Error(`No subcategory with this ${title} is found!`);
+      throw new NotFoundError(`No subcategory with this ${title} is found!`);
     }
 
     return subcategory;
@@ -45,7 +46,7 @@ class SubcategoryService {
     );
 
     if (error || !subcategory) {
-      throw new Error("No subcategory is found!");
+      throw new NotFoundError("No subcategory is found!");
     }
 
     return subcategory;
@@ -57,7 +58,7 @@ class SubcategoryService {
     );
 
     if (error || !subcategory) {
-      throw new Error(`No subcategory with ${id} is found!`);
+      throw new NotFoundError(`No subcategory with ${id} is found!`);
     }
 
     return subcategory;
@@ -69,7 +70,7 @@ class SubcategoryService {
     );
 
     if (error) {
-      throw new Error(`No subcategory with this title ${id} is found!`);
+      throw new NotFoundError(`No subcategory with this title ${id} is found!`);
     }
 
     return subcategory;
@@ -81,7 +82,7 @@ class SubcategoryService {
     );
 
     if (error || !subcategory) {
-      throw new Error("No subcategory is found!");
+      throw new NotFoundError("No subcategory is found!");
     }
 
     return subcategory;

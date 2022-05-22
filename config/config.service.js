@@ -1,6 +1,9 @@
 import joi from "joi";
+import dotenv from "dotenv";
 
 import ConfigSchema from "./config.schema.js";
+import ValidationError from "../errors/validation.error.js";
+dotenv.config();
 
 class ConfigService {
   constructor() {
@@ -10,13 +13,14 @@ class ConfigService {
   }
 
   isValid() {
-    const schema = joi.object(ConfigSchema).unknown();
-
+    const schema = joi.object(ConfigSchema);
     const { error } = schema.validate(this, { stripUnknown: true });
 
     if (error) {
-      throw new Error(`Config validation error: ${error.message}`);
+      throw new ValidationError(`Config validation error: ${error.message}`);
     }
+
+    return !error;
   }
 }
 
