@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { to } from "await-to-js";
 
 import userRepository from "../repository/user.repository.js";
-import NotFoundError from "../errors/not-found.error.js";
-import UnauthorizedError from "../errors/unauthorized.error.js";
+import NotFoundException from "../errors/not-found.exception.js";
+import UnauthorizedException from "../errors/unauthorized.exception.js";
 import ConfigService from "../config/config.service.js";
 
 class UserService {
@@ -12,7 +12,7 @@ class UserService {
     const [error, user] = await to(userRepository.getUserByEmail(email));
 
     if (user || error) {
-      throw new UnauthorizedError(`This email ${email} is taken`);
+      throw new UnauthorizedException(`This email ${email} is taken`);
     }
 
     const [, hashedPassword] = await to(bcrypt.hash(password, 12));
@@ -21,7 +21,7 @@ class UserService {
     );
 
     if (err) {
-      throw new UnauthorizedError(err);
+      throw new UnauthorizedException(err);
     }
 
     return newUser;
@@ -31,13 +31,13 @@ class UserService {
     const [, user] = await to(userRepository.getUserByEmail(email));
 
     if (!user) {
-      throw new NotFoundError(`No user with this email ${email} is found!`);
+      throw new NotFoundException(`No user with this email ${email} is found!`);
     }
 
     const [error, doMatch] = await to(bcrypt.compare(password, user.password));
 
     if (error || !doMatch) {
-      throw new UnauthorizedError("Authentication failed");
+      throw new UnauthorizedException("Authentication failed");
     }
 
     const token = await jwt.sign(
@@ -55,7 +55,7 @@ class UserService {
     const [error, user] = await to(userRepository.getUserById(id));
 
     if (error || !user) {
-      throw new NotFoundError(`No user with this ${id} is found!`);
+      throw new NotFoundException(`No user with this ${id} is found!`);
     }
 
     return user;
@@ -65,7 +65,7 @@ class UserService {
     const [error, user] = await to(userRepository.getUserByName(name));
 
     if (error || !user) {
-      throw new NotFoundError(`No user with this ${name} name is found!`);
+      throw new NotFoundException(`No user with this ${name} name is found!`);
     }
 
     return user;
@@ -75,7 +75,7 @@ class UserService {
     const [error, user] = await to(userRepository.getAllUsers());
 
     if (error || !user) {
-      throw new NotFoundError("No user is found!");
+      throw new NotFoundException("No user is found!");
     }
 
     return user;
@@ -85,14 +85,14 @@ class UserService {
     let [error, user] = await to(userRepository.getUserById(id));
 
     if (error || !user) {
-      throw new NotFoundError(`No user with ${id} is found!`);
+      throw new NotFoundException(`No user with ${id} is found!`);
     }
 
     const password = await bcrypt.hash(updates.password, 12);
     const [err, hashedPassword] = await to(bcrypt.hash(password, 12));
 
     if (err) {
-      throw new UnauthorizedError(`Encryption error`);
+      throw new UnauthorizedException(`Encryption error`);
     }
 
     updates.password = hashedPassword;
@@ -105,7 +105,7 @@ class UserService {
     const [error, user] = await to(userRepository.deleteUserById(id));
 
     if (error || !user) {
-      throw new NotFoundError(`No user with this title ${id} is found!`);
+      throw new NotFoundException(`No user with this title ${id} is found!`);
     }
 
     return user;
@@ -115,7 +115,7 @@ class UserService {
     const [error, user] = await to(userRepository.deleteAllUsers());
 
     if (error || !user) {
-      throw new NotFoundError("No user is found!");
+      throw new NotFoundException("No user is found!");
     }
 
     return user;
@@ -127,7 +127,7 @@ class UserService {
     );
 
     if (error) {
-      throw new UnauthorizedError(error);
+      throw new UnauthorizedException(error);
     }
 
     return course;
@@ -137,7 +137,7 @@ class UserService {
     const [error, user] = await to(userRepository.getUserById(id));
 
     if (error || !user) {
-      throw new NotFoundError(`No user with this ${id} is found!`);
+      throw new NotFoundException(`No user with this ${id} is found!`);
     }
 
     return user.registeredCourses;

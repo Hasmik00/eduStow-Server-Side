@@ -1,22 +1,47 @@
-import NotFoundError from "../errors/not-found.error.js";
-import UnauthorizedError from "../errors/unauthorized.error.js";
-import ValidationError from "../errors/validation.error.js";
+import NotFoundException from "../errors/not-found.exception.js";
+import UnauthorizedException from "../errors/unauthorized.exception.js";
+import BadRequestException from "../errors/bad-request.exception.js";
 
-const errorHandler = async (err, req, res, next) => {
-  if (err instanceof NotFoundError) {
-    return res.status(404).send(err.message);
+export const errorHandler = (err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message;
+  let response = {};
+
+  if (err instanceof NotFoundException) {
+    // todo: the best way could be determine http exceptions
+    response = {
+      status: statusCode,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  } else if (err instanceof UnauthorizedException) {
+    response = {
+      status: statusCode,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  } else if (err instanceof BadRequestException) {
+    response = {
+      status: statusCode,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  } else if (err instanceof Error) {
+    response = {
+      status: statusCode,
+      message,
+      details: {
+        stack: err.stack,
+      },
+    };
+  } else {
+    response = {
+      status: 500,
+      message: "Unhandled exception",
+      timestamp: new Date().toISOString(),
+    };
   }
 
-  if (err instanceof UnauthorizedError) {
-    return res.status(401).send(err.message);
-  }
-
-  if (err instanceof ValidationError) {
-    return res.status(400).send(err.message);
-  }
-
-  res.status(500).send("Some error occurred");
+  res.status(statusCode).send(response);
   next(err);
 };
-
-export default errorHandler;
