@@ -1,22 +1,27 @@
 import { validationResult } from "express-validator";
 
 import UserService from "../service/user.service.js";
-import NotFoundError from "../errors/not-found.error.js";
-import ValidationError from "../errors/validation.error.js";
+import NotFoundException from "../errors/not-found.exception.js";
+import BadRequestException from "../errors/bad-request.exception.js";
+import badRequestException from "../errors/bad-request.exception.js";
 
-export const signUp = async (req, res) => {
+export const signUp = async (req, res, next) => {
   const errors = validationResult(req);
   const { name, email, password } = req.body;
 
   if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter valid data");
+    throw new badRequestException("Please enter valid data");
   }
 
-  const newUser = await UserService.signUp(name, email, password);
-  res.status(200).send(newUser);
+  try {
+    const newUser = await UserService.signUp(name, email, password);
+    res.status(200).send(newUser);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const signIn = async (req, res) => {
+export const signIn = async (req, res, next) => {
   const errors = validationResult(req);
   const { email, password } = req.body;
 
@@ -24,82 +29,118 @@ export const signIn = async (req, res) => {
     return res.status(400).json(errors.array());
   }
 
-  const token = await UserService.signIn(email, password);
-  res.status(201).header("auth-token", token).send(token);
+  try {
+    const token = await UserService.signIn(email, password);
+    res.status(201).header("auth-token", token).send(token);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const getUserById = async (req, res) => {
+export const getUserById = async (req, res, next) => {
   const id = req.params.id;
 
-  const user = await UserService.getUserById(id);
-  res.status(200).send(user);
+  try {
+    const user = await UserService.getUserById(id);
+    res.status(200).send(user);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const getUserByName = async (req, res) => {
+export const getUserByName = async (req, res, next) => {
   const errors = validationResult(req);
   const { name } = req.params;
 
   if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid title");
+    throw new BadRequestException("Please enter a valid title");
   }
 
-  const user = await UserService.getUserByName(name);
-  res.status(200).send(user);
+  try {
+    const user = await UserService.getUserByName(name);
+    res.status(200).send(user);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const getAllUsers = async (req, res) => {
-  const users = await UserService.getAllUsers();
-  res.status(200).send(users);
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await UserService.getAllUsers();
+    res.status(200).send(users);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const updateUserById = async (req, res) => {
+export const updateUserById = async (req, res, next) => {
   const id = req.params.id;
   const user = await UserService.getUserById(id);
   const errors = validationResult(req);
   const updates = req.body;
 
   if (!user) {
-    throw new NotFoundError(`No user found with this ${id} id`);
+    throw new NotFoundException(`No user found with this ${id} id`);
   } else if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
+    throw new BadRequestException("Please enter a valid id");
   }
 
-  const newUser = await UserService.updateUserById(id, updates);
-  res.status(201).send(newUser);
+  try {
+    const newUser = await UserService.updateUserById(id, updates);
+    res.status(201).send(newUser);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const deleteUserById = async (req, res) => {
+export const deleteUserById = async (req, res, next) => {
   const id = req.params.id;
   const user = await UserService.getUserById(id);
 
   if (!user) {
-    throw new NotFoundError(`No user found with this ${id} id`);
+    throw new NotFoundException(`No user found with this ${id} id`);
   }
 
-  const deletedUser = await UserService.deleteUserById(id);
-  res.status(200).send(deletedUser);
+  try {
+    const deletedUser = await UserService.deleteUserById(id);
+    res.status(200).send(deletedUser);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const deleteAllUsers = async (req, res) => {
-  await UserService.deleteAllUsers();
-  res.status(200).send("Deleted all users!");
+export const deleteAllUsers = async (req, res, next) => {
+  try {
+    await UserService.deleteAllUsers();
+    res.status(200).send("Deleted all users!");
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const registerForCourse = async (req, res) => {
+export const registerForCourse = async (req, res, next) => {
   const { userId, courseId } = req.params;
-  const registered = await UserService.registerForCourse(userId, courseId);
 
-  res.status(201).send(registered);
+  try {
+    const registered = await UserService.registerForCourse(userId, courseId);
+    res.status(201).send(registered);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const getMyCourses = async (req, res) => {
+export const getMyCourses = async (req, res, next) => {
   const errors = validationResult(req);
   const id = req.params.id;
 
   if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid id");
+    throw new BadRequestException("Please enter a valid id");
   }
 
-  const courses = await UserService.getMyCourses(id);
-  res.status(200).send(courses);
+  try {
+    const courses = await UserService.getMyCourses(id);
+    res.status(200).send(courses);
+  } catch (e) {
+    next(e);
+  }
 };

@@ -2,7 +2,7 @@ import joi from "joi";
 import dotenv from "dotenv";
 
 import ConfigSchema from "./config.schema.js";
-import ValidationError from "../errors/validation.error.js";
+import BadRequestException from "../errors/bad-request.exception.js";
 dotenv.config();
 
 class ConfigService {
@@ -17,7 +17,9 @@ class ConfigService {
     const { error } = schema.validate(this, { stripUnknown: true });
 
     if (error) {
-      throw new ValidationError(`Config validation error: ${error.message}`);
+      throw new BadRequestException(
+        `Config validation error: ${error.message}`
+      );
     }
 
     return !error;

@@ -1,73 +1,105 @@
 import { validationResult } from "express-validator";
 
 import CategoryService from "../service/Category.service.js";
-import NotFoundError from "../errors/not-found.error.js";
-import ValidationError from "../errors/validation.error.js";
+import NotFoundException from "../errors/not-found.exception.js";
+import BadRequestException from "../errors/bad-request.exception.js";
 
-export const createCategory = async (req, res) => {
+export const createCategory = async (req, res, next) => {
   const errors = validationResult(req);
   const { title, description } = req.body;
 
   if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter valid data");
+    throw new BadRequestException("Please enter valid data");
   }
 
-  const newCategory = await CategoryService.createCategory(title, description);
-  res.status(201).send(newCategory);
+  try {
+    const newCategory = await CategoryService.createCategory(
+      title,
+      description
+    );
+    res.status(201).send(newCategory);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const getCategoryById = async (req, res) => {
+export const getCategoryById = async (req, res, next) => {
   const id = req.params.id;
-  const category = await CategoryService.getCategoryById(id);
-  res.status(200).send(category);
+
+  try {
+    const category = await CategoryService.getCategoryById(id);
+    res.status(200).send(category);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const getCategoryByTitle = async (req, res) => {
+export const getCategoryByTitle = async (req, res, next) => {
   const errors = validationResult(req);
   const { title } = req.params;
 
   if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid title");
+    throw new BadRequestException("Please enter a valid title");
   }
 
-  const category = await CategoryService.getCategoryByTitle(title);
-  res.status(200).send(category);
+  try {
+    const category = await CategoryService.getCategoryByTitle(title);
+    res.status(200).send(category);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const getAllCategories = async (req, res) => {
-  const categories = await CategoryService.getAllCategories();
-  res.status(200).send(categories);
+export const getAllCategories = async (req, res, next) => {
+  try {
+    const categories = await CategoryService.getAllCategories();
+    res.status(200).send(categories);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const updateCategoryById = async (req, res) => {
+export const updateCategoryById = async (req, res, next) => {
   const id = req.params.id;
   const category = await CategoryService.getCategoryById(id);
   const errors = validationResult(req);
   const updates = req.body;
 
   if (!category) {
-    throw new NotFoundError(`No category found with this ${id} id`);
+    throw new NotFoundException(`No category found with this ${id} id`);
   } else if (!errors.isEmpty()) {
-    throw new ValidationError("Please enter a valid data");
+    throw new BadRequestException("Please enter a valid data");
   }
 
-  const newCategory = await CategoryService.updateACategoryById(id, updates);
-  res.status(201).send(newCategory);
+  try {
+    const newCategory = await CategoryService.updateACategoryById(id, updates);
+    res.status(201).send(newCategory);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const deleteCategoryById = async (req, res) => {
+export const deleteCategoryById = async (req, res, next) => {
   const id = req.params.id;
   const category = await CategoryService.getCategoryById(id);
 
   if (!category) {
-    throw new NotFoundError(`No category found with this ${id} id`);
+    throw new NotFoundException(`No category found with this ${id} id`);
   }
 
-  const deletedCategory = await CategoryService.deleteCategoryById(id);
-  res.status(200).send(deletedCategory);
+  try {
+    const deletedCategory = await CategoryService.deleteCategoryById(id);
+    res.status(200).send(deletedCategory);
+  } catch (e) {
+    next(e);
+  }
 };
 
-export const deleteAllCategories = async (req, res) => {
-  await CategoryService.deleteAllCategories();
-  res.status(200).send("Deleted all categories!");
+export const deleteAllCategories = async (req, res, next) => {
+  try {
+    await CategoryService.deleteAllCategories();
+    res.status(200).send("Deleted all categories!");
+  } catch (e) {
+    next(e);
+  }
 };

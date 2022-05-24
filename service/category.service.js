@@ -1,7 +1,7 @@
 import { to } from "await-to-js";
 
 import categoryRepository from "../repository/category.repository.js";
-import NotFoundError from "../errors/not-found.error.js";
+import NotFoundException from "../errors/not-found.exception.js";
 
 class CategoryService {
   static async createCategory(title, description) {
@@ -22,7 +22,9 @@ class CategoryService {
     );
 
     if (error || !category) {
-      throw new NotFoundError(`No category with this ${title} title is found!`);
+      throw new NotFoundException(
+        `No category with this ${title} title is found!`
+      );
     }
 
     return category;
@@ -32,7 +34,7 @@ class CategoryService {
     const [error, category] = await to(categoryRepository.getCategoryById(id));
 
     if (error || !category) {
-      throw new NotFoundError(`No category with this ${id} is found!`);
+      throw new NotFoundException(`No category with this ${id} is found!`);
     }
 
     return category;
@@ -42,7 +44,7 @@ class CategoryService {
     const [error, category] = await to(categoryRepository.getAllCategories());
 
     if (error || !category) {
-      throw new NotFoundError("No category is found!");
+      throw new NotFoundException("No category is found!");
     }
 
     return category;
@@ -54,7 +56,7 @@ class CategoryService {
     );
 
     if (error || !category) {
-      throw new NotFoundError(`No category with ${id} is found!`);
+      throw new NotFoundException(`No category with ${id} is found!`);
     }
 
     return category;
@@ -66,7 +68,9 @@ class CategoryService {
     );
 
     if (error || !category) {
-      throw new NotFoundError(`No category with this title ${id} is found!`);
+      throw new NotFoundException(
+        `No category with this title ${id} is found!`
+      );
     }
 
     return category;
@@ -78,7 +82,7 @@ class CategoryService {
     );
 
     if (error || !category) {
-      throw new NotFoundError("No category is found!");
+      throw new NotFoundException("No category is found!");
     }
 
     return category;

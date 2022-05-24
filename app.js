@@ -6,7 +6,11 @@ import categoryRoute from "./routes/category.route.js";
 import subcategoryRoute from "./routes/subcategory.route.js";
 import courseRoute from "./routes/course.route.js";
 import ConfigService from "./config/config.service.js";
-import errorHandler from "./middlewares/error-handler.js";
+import { errorHandler } from "./middlewares/error-handler.js";
+
+if (!ConfigService.isValid()) {
+  process.exit(1);
+}
 
 const app = express();
 dbConnection.connect;
@@ -30,10 +34,6 @@ app.use("/user", userRoutes);
 app.use("/category", categoryRoute);
 app.use("/subcategory", subcategoryRoute);
 app.use("/course", courseRoute);
-
-if (!ConfigService.isValid()) {
-  process.exit(0);
-}
 
 app.use(errorHandler);
 
